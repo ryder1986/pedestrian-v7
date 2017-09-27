@@ -122,8 +122,17 @@ public slots:
         {
             datagram_rst.resize((udp_skt_alg_output->pendingDatagramSize()));
             udp_skt_alg_output->readDatagram(datagram_rst.data(),datagram_rst.size());
-            prt(info,"get rst : %s",datagram_rst.data());
+            QList <QByteArray > bl= datagram_rst.split(':');
+            QByteArray b_index=bl[1];
+            int index=*(b_index);
 
+            prt(info,"get index : %d",index);
+
+            QByteArray b_loc=bl[2];
+             QList <QByteArray > xy= b_loc.split(',');
+             QByteArray b_x=xy[1];int x=*b_x;
+             QByteArray b_y=xy[2];int y=*b_y;
+     prt(info,"get  locate  : %d, %d",x,y);
         }
     }
     void get_reply()

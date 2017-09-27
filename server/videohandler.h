@@ -127,7 +127,11 @@ public:
                             rectangle(frame, rct, Scalar(0, 255, 0), 2);
 
                         }
-
+                        rst_ba.append(rct.x);
+                        rst_ba.append(",");
+                        rst_ba.append(rct.y);
+                      //  rst_ba.append(";");
+                      //  rst_ba.append(rct.x);
                         it++;
                     }
 

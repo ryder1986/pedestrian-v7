@@ -149,7 +149,7 @@ protected:
 
 signals:
     void restart_source();
-    void output(QByteArray ba);
+    void output(QByteArray ba,Camera *addr);
 public slots:
     void tick_check_frame_rate()
     {
@@ -192,7 +192,8 @@ public slots:
     {
         work_lock.lock();
         QByteArray ba;
-        ba.append(p_video_src->get_url());
+        ba.clear();
+     //   ba.append(p_video_src->get_url());
         bool ret=true;
         //      if(connected==true){
         if(p_video_src!=NULL){
@@ -231,7 +232,7 @@ public slots:
             ret=false;
         }
         if(ret==true){
-               emit  output(ba);
+               emit  output(ba,this);
                tick++;
              //  prt(info,"tick now %d  %d" ,  tick,tick_last);
         }
@@ -309,9 +310,21 @@ public:
     }
 
 public slots:
-    void camera_output(QByteArray ba)
+    void camera_output(QByteArray ba,Camera *c)
     {
-        emit output_2_client(ba);
+        int index=cams.indexOf(c);
+//        ba.append(";");
+//        ba.append(index);
+        QByteArray rst;
+        rst.clear();
+        rst.append(index);
+
+        rst.append(":");
+        rst.append(ba);
+
+//        ba.clear();
+//        ba.append(3);
+        emit output_2_client(rst);
     }
 
     void add_camera(QByteArray buf)
@@ -333,14 +346,15 @@ public slots:
     void add_camera_internal(int index)
     {
         Camera *c=new Camera(p_cfg->data.camera[index]);
-        connect(c,SIGNAL(output(QByteArray)),this,SLOT(camera_output(QByteArray)));
+        connect(c,SIGNAL(output(QByteArray,Camera *)),this,SLOT(camera_output(QByteArray,Camera *)));
         cams.append(c);
      //   c->start();
         prt(info,"cam %d append",index);
     }
     void del_camera_internal(int index)
     {
-        disconnect(cams[index],SIGNAL(output(QByteArray)),this,SLOT(camera_output(QByteArray)));
+        disconnect(cams[index],SIGNAL(output(QByteArray,Camera *)),this,SLOT(camera_output(QByteArray,Camera *)));
+     //   disconnect(cams[index],SIGNAL(output(QByteArray)),this,SLOT(camera_output(QByteArray)));
         delete cams[index];
         cams.removeAt(index);
         prt(info,"cam %d deleted",index);
