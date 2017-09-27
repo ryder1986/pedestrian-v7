@@ -57,7 +57,8 @@ public:
         vector<Rect> objs;
         //string cascade_name = "../Hog_Adaboost_Pedestrian_Detect\\hogcascade_pedestrians.xml";
         // string cascade_name = "/root/hogcascade_pedestrians.xml";
-        string cascade_name = "/root/repo-github/pedestrian/hogcascade_pedestrians.xml";
+
+        string cascade_name = "../hogcascade_pedestrians.xml";
 
         if (!cascade.load(cascade_name))
         {
