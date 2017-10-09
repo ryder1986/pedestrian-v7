@@ -39,7 +39,9 @@ public:
         quit_work=false;
         tick_last=tick=0;
         tick_work=0;
+        connect(&video_handler,SIGNAL(send_rst(QByteArray)),this,SLOT(handler_output(QByteArray)));
         start_video_src();
+
         //      connected=false;
    //     create_video_src();
         //      emit restart_source();
@@ -151,6 +153,11 @@ signals:
     void restart_source();
     void output(QByteArray ba,Camera *addr);
 public slots:
+    void handler_output(QByteArray ba)
+    {
+            emit  output(ba,this);
+    }
+
     void tick_check_frame_rate()
     {
         prt(info,"frame rate %d",tick-tick_last);
@@ -218,7 +225,7 @@ public slots:
                 }else
                 {
                     video_handler.set_frame(f);
-                    video_handler.work(ba);
+                    ret=video_handler.work(ba);
               //      prt(info,"get   video");
                 }
             }else{
@@ -232,7 +239,7 @@ public slots:
             ret=false;
         }
         if(ret==true){
-               emit  output(ba,this);
+             //  emit  output(ba,this);
                tick++;
              //  prt(info,"tick now %d  %d" ,  tick,tick_last);
         }

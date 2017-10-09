@@ -58,10 +58,8 @@ public slots:
     void send_rst_to_client(QByteArray ba)
     {
         if(skt->state()==QTcpSocket::ConnectedState)
-          {
-
-            udp_skt->writeDatagram(ba.data(),client_addr,Protocol::SERVER_DATA_OUTPUT_PORT);
-            prt(info,"seding");
+        {
+            udp_skt->writeDatagram(ba,ba.length(),client_addr,Protocol::SERVER_DATA_OUTPUT_PORT);
         }
     }
 

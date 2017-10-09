@@ -26,9 +26,9 @@ public:
     void set_frame(Mat *frm){
         p_render->render_set_mat(*frm);
     }
-    void work(QByteArray  &ba)
+    bool  work(QByteArray  &ba)
     {
-
+        return true;
     }
     QWidget *get_render()
     {

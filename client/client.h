@@ -117,22 +117,28 @@ public slots:
     void get_rst()
     {
         QByteArray datagram_rst;
+         // char sss[500];
+       //   memset(sss,0,500);
         //  while(udp_skt->hasPendingDatagrams())
         if(udp_skt_alg_output->hasPendingDatagrams())
         {
+         //   int size=udp_skt_alg_output->pendingDatagramSize();
             datagram_rst.resize((udp_skt_alg_output->pendingDatagramSize()));
-            udp_skt_alg_output->readDatagram(datagram_rst.data(),datagram_rst.size());
-            QList <QByteArray > bl= datagram_rst.split(':');
-            QByteArray b_index=bl[1];
+          udp_skt_alg_output->readDatagram(datagram_rst.data(),datagram_rst.size());
+//        udp_skt_alg_output->readDatagram(sss,500);
+//          datagram_rst= udp_skt_alg_output->readAll();
+             QList <QByteArray > bl= datagram_rst.split(':');
+            QByteArray b_index=bl[0];
             int index=*(b_index);
 
             prt(info,"get index : %d",index);
 
-            QByteArray b_loc=bl[2];
-             QList <QByteArray > xy= b_loc.split(',');
-             QByteArray b_x=xy[1];int x=*b_x;
-             QByteArray b_y=xy[2];int y=*b_y;
-     prt(info,"get  locate  : %d, %d",x,y);
+            QByteArray b_loc=bl[1];
+            QList <QByteArray > xy= b_loc.split(',');
+            int x=xy[0].toInt();
+            int y=xy[1].toInt();
+               prt(info," %d : %d",x,y);
+
         }
     }
     void get_reply()

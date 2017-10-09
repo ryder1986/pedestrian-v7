@@ -48,11 +48,11 @@ public:
     {
         frame_mat=frame;
     }
-    int work(QByteArray &rst_ba)
+    bool work(QByteArray &rst_ba)
     {
         int min_win_width = 64;	// 48, 64, 96, 128, 160, 192, 224
         int max_win_width = 256;
-
+        bool ret=false;
         CascadeClassifier cascade;
         vector<Rect> objs;
         //string cascade_name = "../Hog_Adaboost_Pedestrian_Detect\\hogcascade_pedestrians.xml";
@@ -124,12 +124,23 @@ public:
                             //rct.x += rect.x;
                             //rct.y += rect.y;
 
+                            int test=12345;
                             rectangle(frame, rct, Scalar(0, 255, 0), 2);
 
+                            QString x_str=QString::number(rct.x);
+                            QString y_str=QString::number(rct.y);
+                            QString test_str=QString::number(test);
+
+                            rst_ba.append(x_str.toStdString().data());
+                            rst_ba.append(",");
+                            rst_ba.append(y_str.toStdString().data());
+                            prt(info,"%d %d",rct.x,rct.y);
+
+                            ret=true;
+                            break;//TODO, now we get first one
+
                         }
-                        rst_ba.append(rct.x);
-                        rst_ba.append(",");
-                        rst_ba.append(rct.y);
+
                       //  rst_ba.append(";");
                       //  rst_ba.append(rct.x);
                         it++;
@@ -152,10 +163,14 @@ public:
             }
         }
 #endif
+        if(ret==true){
+            emit send_rst(rst_ba);
+        }
+        return ret;
     }
 
 signals:
-  //  void send_rst(void *data,int len);
+    void send_rst(QByteArray ba);
 private:
     Mat gray_frame;
     Mat pedestrians;
