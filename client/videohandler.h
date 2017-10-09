@@ -38,6 +38,11 @@ public:
 signals:
 
 public slots:
+    void set_layout_infomation(QByteArray ba)
+    {
+        p_render->set_rect(ba);
+    }
+
 private:
     YuvRender *p_render;
 };

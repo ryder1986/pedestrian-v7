@@ -112,7 +112,7 @@ public:
 
 
 signals:
-
+    void send_camera_rst(int index, QByteArray ba);
 public slots:
     void get_rst()
     {
@@ -134,10 +134,11 @@ public slots:
             prt(info,"get index : %d",index);
 
             QByteArray b_loc=bl[1];
-            QList <QByteArray > xy= b_loc.split(',');
-            int x=xy[0].toInt();
-            int y=xy[1].toInt();
-               prt(info," %d : %d",x,y);
+            emit send_camera_rst(index,b_loc);
+        //    QList <QByteArray > xy= b_loc.split(',');
+//            int x=xy[0].toInt();
+//            int y=xy[1].toInt();
+//           prt(info," %d : %d",x,y);
 
         }
     }

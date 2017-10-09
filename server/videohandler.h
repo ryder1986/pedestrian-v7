@@ -147,7 +147,7 @@ public:
                     }
 
                  //   rectangle(frame,rect,Scalar(0,255,0),2);
-             //    imshow("result", frame);
+             //  imshow("result", frame);
                     //outputVideo << frame;
                     //   waitKey(1);
                     objs.clear();

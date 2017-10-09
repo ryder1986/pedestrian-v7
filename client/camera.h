@@ -129,6 +129,11 @@ public:
     {
         return video_handler.get_render();
     }
+    void set_data(QByteArray ba)
+    {
+        video_handler.set_layout_infomation(ba);
+    }
+
 #endif
 protected:
     virtual void run()

@@ -14,7 +14,7 @@
 #include "videosrc.h"
 
 class ClientCameraManager:public CameraManager{
-
+    Q_OBJECT
 public:
     ClientCameraManager() :CameraManager("/root/repo-github/pedestrian-v7/client/config.json")
     {
@@ -36,7 +36,12 @@ public:
         }
 
     }
-
+public slots:
+    void set_camera_layout(int index, QByteArray  ba)
+    {
+          QList <Camera *> &c=get_cam();
+          c[index]->set_data(ba);
+    }
 
 private:
 
@@ -67,6 +72,8 @@ public:
         cam_manager=new ClientCameraManager();
         client=new Client();
         cam_manager->reconfig_camera(ui->gridLayout_2);
+
+        connect(client,SIGNAL(send_camera_rst(int,QByteArray)),cam_manager,SLOT(set_camera_layout(int,QByteArray)));
 #if 0
         QPushButton *b1=new QPushButton("1");
         QPushButton *b2=new QPushButton("2");

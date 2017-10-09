@@ -23,14 +23,16 @@ public:
     YuvRender(QWidget *parent=0) :
         QGLWidget(parent),video_width(VIDEO_WIDTH),video_height(VIDEO_HEIGHT),pressed_x(0),pressed_y(0)
     {
+        pos_x=100;
+        pos_y=100;
         tick=0;
     }
 
 
-//    void  set_buf(char *buffer)
-//    {
-//        memcpy(yuv_buf,buffer,VIDEO_WIDTH*VIDEO_HEIGHT*3/2);
-//    }
+    //    void  set_buf(char *buffer)
+    //    {
+    //        memcpy(yuv_buf,buffer,VIDEO_WIDTH*VIDEO_HEIGHT*3/2);
+    //    }
 
     //    void  initializeGL()
     //    {
@@ -136,14 +138,14 @@ public:
         //   QImage  img = QImage((const uchar*)\
         (frame.data),frame.cols,frame.rows,frame.cols*frame.channels(),\
                 QImage::Format_RGB888);
-      //  char t=*frame.data;
+        //  char t=*frame.data;
 
         Mat rgb_frame=frame;
         // cvtColor(frame,rgb_frame,CV_YUV2BGR);
         Mat yuv_frame;
-     //     cvtColor(rgb_frame,yuv_frame,CV_RGB2GRAY);
-       cvtColor(rgb_frame,yuv_frame,CV_BGR2RGB);
-       QImage  img = QImage((const uchar*)(yuv_frame.data),
+        //     cvtColor(rgb_frame,yuv_frame,CV_RGB2GRAY);
+        cvtColor(rgb_frame,yuv_frame,CV_BGR2RGB);
+        QImage  img = QImage((const uchar*)(yuv_frame.data),
                              yuv_frame.cols,yuv_frame.rows,
                              yuv_frame.cols*yuv_frame.channels(),
                              QImage::Format_RGB888);
@@ -151,6 +153,20 @@ public:
         painter.endNativePainting();
 
 #endif
+    }
+    void paint_layout_rect(QPainter &painter){
+        QBrush red_brush_trans(QColor(0,0,200,100));
+        painter.setBrush(red_brush_trans);
+        painter.drawEllipse(pos_x,pos_y,50,50);
+    }
+    void set_rect(QByteArray ba)
+    {
+        QList<QByteArray> xy=ba.split(',');
+        int x=xy[0].toInt();
+        int y=xy[1].toInt();
+        pos_x=x;
+        pos_y=y;
+        prt(info," %d : %d",x,y);
     }
     void paint_layout2(QPainter &painter){
 #if 0
@@ -187,11 +203,12 @@ public:
     {
         int len=frame.cols;
         if(frame.cols>0){
-             tick++;
-             //prt(info,"painting");
+            tick++;
+            //prt(info,"painting");
             tick+=10;
             QPainter painter(this);
             paint_layout1(painter);
+            paint_layout_rect(painter);
         }
         //  paint_layout2(painter);
     }
@@ -260,17 +277,17 @@ public slots:
     int render_set_mat(Mat frame_mat)
     {
         int size=frame_mat.total();
-      //  prt(info,"%d",size);
- // char tmp2=*f.data;
- // prt(info,"tick %d",tickmat++);
-//        if(tickmat >590&&tickmat<610)
-//            return 1;
-//   prt(info,"render set frame  ");
+        //  prt(info,"%d",size);
+        // char tmp2=*f.data;
+        // prt(info,"tick %d",tickmat++);
+        //        if(tickmat >590&&tickmat<610)
+        //            return 1;
+        //   prt(info,"render set frame  ");
         if(size>0)
         {
-       //     prt(info,"render set frame ok");
+            //     prt(info,"render set frame ok");
             frame=frame_mat;
-     //       prt(info,"%d",sizeof(f.data));
+            //       prt(info,"%d",sizeof(f.data));
             //char tmp1=*f.data;
             //char tmp=*frame.data;
         }else
@@ -281,12 +298,12 @@ public slots:
             frame=Mat(640,480,CV_8UC3);
 
             memset(frame.data,255,640*480*3);
-        //    char tmp1=*f.data;
-         //   char tmp=*frame.data;
+            //    char tmp1=*f.data;
+            //   char tmp=*frame.data;
 
         }
         this->update();
-    //    prt(info,"update pic menually");
+        //    prt(info,"update pic menually");
         return 1;
     }
 
@@ -301,7 +318,8 @@ private:
     int tick;
     int tickmat;
     Mat frame;
-
+    int pos_x;
+    int pos_y;
 
     QPoint pt[16];
     QPoint pt_rear[16];
