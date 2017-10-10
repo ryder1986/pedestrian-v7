@@ -150,7 +150,7 @@ protected:
                 QThread::msleep(100);
                 //      break;
             }
-            QThread::msleep(200);
+        //    QThread::msleep(200);
         }
     }
 

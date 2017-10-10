@@ -134,7 +134,7 @@ public:
                             rst_ba.append(x_str.toStdString().data());
                             rst_ba.append(",");
                             rst_ba.append(y_str.toStdString().data());
-                            prt(info,"%d %d",rct.x,rct.y);
+                            //prt(info,"%d %d",rct.x,rct.y);
 
                             ret=true;
                             break;//TODO, now we get first one

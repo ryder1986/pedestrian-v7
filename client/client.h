@@ -131,7 +131,7 @@ public slots:
             QByteArray b_index=bl[0];
             int index=*(b_index);
 
-            prt(info,"get index : %d",index);
+            prt(info,"get cam   %d rst",index);
 
             QByteArray b_loc=bl[1];
             emit send_camera_rst(index,b_loc);
