@@ -150,7 +150,7 @@ protected:
                 QThread::msleep(100);
                 //      break;
             }
-            QThread::msleep(1);
+            QThread::msleep(200);
         }
     }
 
@@ -230,8 +230,8 @@ public slots:
                 }else
                 {
                     video_handler.set_frame(f);
-                    ret=video_handler.work(ba);
-              //      prt(info,"get   video");
+                    video_handler.work(ba);
+                    //prt(info,"src %s ret %d",p_video_src->get_url(),ret==true?1:0);
                 }
             }else{
                 //      prt(info,"sleep start");
