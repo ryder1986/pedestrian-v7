@@ -75,7 +75,7 @@ public:
             //   memcpy(frame.data,frame_ori->imageData,frame_ori->imageSize);
            // Mat frame(frame_ori);
             Mat frame(*frame_mat);
-             // imshow(url,frame);
+          //   imshow("url",frame);
         //   return 0;
 
             //  cout << "opened " << endl;
@@ -147,7 +147,7 @@ public:
                     }
 
                  //   rectangle(frame,rect,Scalar(0,255,0),2);
-             //  imshow("result", frame);
+               //     imshow("result", frame);
                     //outputVideo << frame;
                     //   waitKey(1);
                     objs.clear();

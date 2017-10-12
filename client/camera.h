@@ -39,11 +39,11 @@ public:
         quit_work=false;
         tick_last=tick=0;
         tick_work=0;
-        connect(&video_handler,SIGNAL(send_rst(QByteArray)),this,SLOT(handler_output(QByteArray)));
+        //   connect(&video_handler,SIGNAL(send_rst(QByteArray)),this,SLOT(handler_output(QByteArray)));
         start_video_src();
 
         //      connected=false;
-   //     create_video_src();
+        //     create_video_src();
         //      emit restart_source();
     }
     ~Camera(){
@@ -67,7 +67,7 @@ public:
         //prt(info,"1");
         work_lock.lock();// lock need because we use videosrc(function "run" use it too)
         p_video_src=new VideoSrc(data.ip);
-//        connect(this,SIGNAL(restart_source()),this,SLOT(restart_video()),Qt::BlockingQueuedConnection);
+        //        connect(this,SIGNAL(restart_source()),this,SLOT(restart_video()),Qt::BlockingQueuedConnection);
         connect(this,SIGNAL(restart_source()),this,SLOT(restart_video()));
         quit_work=false;
         this->start(NormalPriority);
@@ -80,13 +80,13 @@ public:
         delete timer;
 
         quit_work=true;
-       work_lock.lock();//
+        work_lock.lock();//
         disconnect(this,SIGNAL(restart_source()),this,SLOT(restart_video()));
-     //   this->exit();
-          this->quit();//tell run to quit, TODO, why i need quit while manully?
-       this->wait();// wait run  quit
+        //   this->exit();
+        this->quit();//tell run to quit, TODO, why i need quit while manully?
+        this->wait();// wait run  quit
         delete p_video_src;
-         work_lock.unlock();
+        work_lock.unlock();
     }
 
     void create_video_src()
@@ -144,13 +144,13 @@ protected:
             if(work()!=true){
 
                 //    create_video_src();
-                    //prt(info,"restarting  %s",data.ip.toStdString().data());
+                //prt(info,"restarting  %s",data.ip.toStdString().data());
                 emit restart_source();
-             //    prt(info,"restart  %s",data.ip.toStdString().data());
+                //    prt(info,"restart  %s",data.ip.toStdString().data());
                 QThread::msleep(100);
                 //      break;
             }
-        //    QThread::msleep(200);
+            QThread::msleep(1);
         }
     }
 
@@ -160,7 +160,7 @@ signals:
 public slots:
     void handler_output(QByteArray ba)
     {
-            emit  output(ba,this);
+        emit  output(ba,this);
     }
 
     void tick_check_frame_rate()
@@ -176,13 +176,13 @@ public slots:
     //    }
     void restart_video()
     {
-    //    prt(info,"1restarting   %s",data.ip.toStdString().data());
+        //    prt(info,"1restarting   %s",data.ip.toStdString().data());
         close_video_src();
-       // prt(info,"2restarting   %s",data.ip.toStdString().data());
+        // prt(info,"2restarting   %s",data.ip.toStdString().data());
 
         start_video_src();
 
-     //   prt(info,"3restarting   %s",data.ip.toStdString().data());
+        //   prt(info,"3restarting   %s",data.ip.toStdString().data());
 
     }
 
@@ -205,7 +205,7 @@ public slots:
         work_lock.lock();
         QByteArray ba;
         ba.clear();
-     //   ba.append(p_video_src->get_url());
+        //   ba.append(p_video_src->get_url());
         bool ret=true;
         //      if(connected==true){
         if(p_video_src!=NULL){
@@ -244,12 +244,12 @@ public slots:
             ret=false;
         }
         if(ret==true){
-             //  emit  output(ba,this);
-               tick++;
-             //  prt(info,"tick now %d  %d" ,  tick,tick_last);
+            //  emit  output(ba,this);
+            tick++;
+            //  prt(info,"tick now %d  %d" ,  tick,tick_last);
         }
         work_lock.unlock();
-          //prt(info,"ret %d",ret);
+        //prt(info,"ret %d",ret);
         return ret;
     }
 private:
@@ -325,8 +325,8 @@ public slots:
     void camera_output(QByteArray ba,Camera *c)
     {
         int index=cams.indexOf(c);
-//        ba.append(";");
-//        ba.append(index);
+        //        ba.append(";");
+        //        ba.append(index);
         QByteArray rst;
         rst.clear();
         rst.append(index);
@@ -334,8 +334,8 @@ public slots:
         rst.append(":");
         rst.append(ba);
 
-//        ba.clear();
-//        ba.append(3);
+        //        ba.clear();
+        //        ba.append(3);
         emit output_2_client(rst);
     }
 
@@ -360,13 +360,13 @@ public slots:
         Camera *c=new Camera(p_cfg->data.camera[index]);
         connect(c,SIGNAL(output(QByteArray,Camera *)),this,SLOT(camera_output(QByteArray,Camera *)));
         cams.append(c);
-     //   c->start();
+        //   c->start();
         prt(info,"cam %d append",index);
     }
     void del_camera_internal(int index)
     {
         disconnect(cams[index],SIGNAL(output(QByteArray,Camera *)),this,SLOT(camera_output(QByteArray,Camera *)));
-     //   disconnect(cams[index],SIGNAL(output(QByteArray)),this,SLOT(camera_output(QByteArray)));
+        //   disconnect(cams[index],SIGNAL(output(QByteArray)),this,SLOT(camera_output(QByteArray)));
         delete cams[index];
         cams.removeAt(index);
         prt(info,"cam %d deleted",index);

@@ -192,8 +192,9 @@ public:
         // double pro=cvGetCaptureProperty(p_cap,CV_CAP_PROP_XI_TIMEOUT);
         //  prt(info," set %d ,opecv time out %d",ret ,pro);
         //      CV_CAP_PROP_XI_TIMEOUT
+      prt(info,"  start query 1 frame ");
         ret_img=cvQueryFrame(p_cap);
- //            prt(info,"  query done");
+         prt(info,"  query 1 frame done");
         Mat *ret_mat=new Mat(ret_img,0);
         if(ret_img==NULL){
             prt(info,"get video source fail, source url:%s",url);
