@@ -39,8 +39,13 @@ public:
         quit_work=false;
         tick_last=tick=0;
         tick_work=0;
+        timer=new QTimer();
+        connect(timer,SIGNAL(timeout()),this,SLOT(tick_check_frame_rate()));
+    //    connect(this,SIGNAL(restart_source()),this,SLOT(source_disconnected()),Qt::BlockingQueuedConnection);
+         connect(this,SIGNAL(restart_source()),this,SLOT(restart_video()));
+        this->start(NormalPriority);
         //   connect(&video_handler,SIGNAL(send_rst(QByteArray)),this,SLOT(handler_output(QByteArray)));
-        start_video_src();
+      //  start_video_src();
 
         //      connected=false;
         //     create_video_src();
@@ -52,11 +57,14 @@ public:
             quit_work=true;
             //     QThread::msleep(1000);
         }
-        //   this->quit();
-        //      this->exit();
-        this->wait();//wait run done
-        delete p_video_src;
-        p_video_src=NULL;
+       //   this->quit();
+         //      this->exit();
+      //  this->destroyed();
+       this->wait();//wait run done
+      //  if(p_video_src!=NULL)
+     //   delete p_video_src;
+     //   p_video_src=NULL;
+        prt(info,"wait done");
     }
 
     void start_video_src()
@@ -83,42 +91,43 @@ public:
         work_lock.lock();//
         disconnect(this,SIGNAL(restart_source()),this,SLOT(restart_video()));
         //   this->exit();
-        this->quit();//tell run to quit, TODO, why i need quit while manully?
-        this->wait();// wait run  quit
+     //   this->quit();//tell run to quit, TODO, why i need quit while manully?
+      //  this->wait();// wait run  quit
         delete p_video_src;
+        p_video_src=NULL;
         work_lock.unlock();
     }
 
-    void create_video_src()
-    {
-        work_lock.lock();//dont work when creating video source
+//    void create_video_src()
+//    {
+//        work_lock.lock();//dont work when creating video source
 
-        prt(info,"restart %s done",data.ip.toStdString().data());
-        if(p_video_src!=NULL)
-        {
-            //            disconnect(p_video_src,SIGNAL(video_disconnected()),this,SLOT(source_disconnected()));
-            //            disconnect(p_video_src,SIGNAL(video_connected()),this,SLOT(source_connected()));
-            disconnect(this,SIGNAL(restart_source()),this,SLOT(source_disconnected()));
-            disconnect(p_video_src,SIGNAL(video_disconnected()),this,SLOT(source_disconnected()));
+//        prt(info,"restart %s done",data.ip.toStdString().data());
+//        if(p_video_src!=NULL)
+//        {
+//            //            disconnect(p_video_src,SIGNAL(video_disconnected()),this,SLOT(source_disconnected()));
+//            //            disconnect(p_video_src,SIGNAL(video_connected()),this,SLOT(source_connected()));
+//            disconnect(this,SIGNAL(restart_source()),this,SLOT(source_disconnected()));
+//            disconnect(p_video_src,SIGNAL(video_disconnected()),this,SLOT(source_disconnected()));
 
-            delete p_video_src;
-            p_video_src=NULL;
-        }
-        p_video_src=new VideoSrc(data.ip);
-        //        connect(p_video_src,SIGNAL(video_disconnected()),this,SLOT(source_disconnected()));
-        //        connect(p_video_src,SIGNAL(video_connected()),this,SLOT(source_connected()));
+//            delete p_video_src;
+//            p_video_src=NULL;
+//        }
+//        p_video_src=new VideoSrc(data.ip);
+//        //        connect(p_video_src,SIGNAL(video_disconnected()),this,SLOT(source_disconnected()));
+//        //        connect(p_video_src,SIGNAL(video_connected()),this,SLOT(source_connected()));
 
-        connect(this,SIGNAL(restart_source()),this,SLOT(source_disconnected()),Qt::BlockingQueuedConnection);
-        connect(p_video_src,SIGNAL(video_disconnected()),this,SLOT(source_disconnected()));
-        //   connect(this,SIGNAL(restart_source()),this,SLOT(source_connected()));
+//        connect(this,SIGNAL(restart_source()),this,SLOT(source_disconnected()),Qt::BlockingQueuedConnection);
+//        connect(p_video_src,SIGNAL(video_disconnected()),this,SLOT(source_disconnected()));
+//        //   connect(this,SIGNAL(restart_source()),this,SLOT(source_connected()));
 
-        //        if(p_video_src->video_connected_flag==true)
-        //            source_connected();
-        //        else
-        //            source_disconnected();
-        prt(info,"restart %s done",data.ip.toStdString().data());
-        work_lock.unlock();
-    }
+//        //        if(p_video_src->video_connected_flag==true)
+//        //            source_connected();
+//        //        else
+//        //            source_disconnected();
+//        prt(info,"restart %s done",data.ip.toStdString().data());
+//        work_lock.unlock();
+//    }
 
     void restart(camera_data_t dat)
     {
@@ -138,16 +147,25 @@ public:
 protected:
     virtual void run()
     {
+
+     //   return ;
+//        while(1)
+//        {
+//            QThread::msleep(1);
+
+//        }
         while(quit_work==false)
-        {
+        { // prt(info,"runing");
             //         prt(info,"runing %s",data.ip.toStdString().data());
             if(work()!=true){
 
                 //    create_video_src();
                 //prt(info,"restarting  %s",data.ip.toStdString().data());
+                 // prt(info,"emit restart");
+                break;
                 emit restart_source();
                 //    prt(info,"restart  %s",data.ip.toStdString().data());
-                QThread::msleep(100);
+                QThread::msleep(1000);
                 //      break;
             }
             QThread::msleep(1);
@@ -179,22 +197,23 @@ public slots:
         //    prt(info,"1restarting   %s",data.ip.toStdString().data());
         close_video_src();
         // prt(info,"2restarting   %s",data.ip.toStdString().data());
-
+        prt(info,"restarting   %s",data.ip.toStdString().data());
+        QThread::msleep(1000);
         start_video_src();
 
         //   prt(info,"3restarting   %s",data.ip.toStdString().data());
 
     }
 
-    void source_disconnected()
-    {//   lock.lock();
-        //  if(connected==true){//avoid multiple call
-        prt(info,"video disconnected");
-        //       connected=false;
-        create_video_src();
-        // }
-        // lock.unlock();
-    }
+//    void source_disconnected()
+//    {//   lock.lock();
+//        //  if(connected==true){//avoid multiple call
+//        prt(info,"video disconnected");
+//        //       connected=false;
+//        create_video_src();
+//        // }
+//        // lock.unlock();
+//    }
     /*
     video src -> fetch mat
     video handler -> handle mat
@@ -224,7 +243,7 @@ public slots:
             Mat *f=p_video_src->get_frame();
             if(1){
                 if(f==NULL){
-                    prt(info,"get null frame, need to restart video");
+                    prt(info,"No frame get from %s",data.ip.toStdString().data());
                     //    source_disconnected();
                     ret=false;
                 }else
@@ -239,7 +258,7 @@ public slots:
                 //    prt(info,"sleep end");
             }
         }else{
-            prt(info,"%s , work ignored cuz unconnected",data.ip.toStdString().data());
+            prt(info,"%s p_video_src NULL",data.ip.toStdString().data());
             //    source_disconnected();
             ret=false;
         }

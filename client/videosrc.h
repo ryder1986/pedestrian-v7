@@ -85,7 +85,7 @@ public:
         disconnect(timer,SIGNAL(timeout()),this,SLOT(time_up()));
         delete timer;
         //     QThread::sleep(1);
-        prt(info," delete src");
+     //   prt(info," delete src");
 
 
 
@@ -192,12 +192,12 @@ public:
         // double pro=cvGetCaptureProperty(p_cap,CV_CAP_PROP_XI_TIMEOUT);
         //  prt(info," set %d ,opecv time out %d",ret ,pro);
         //      CV_CAP_PROP_XI_TIMEOUT
-      prt(info,"  start query 1 frame ");
+      //prt(info,"  start query 1 frame ");
         ret_img=cvQueryFrame(p_cap);
-         prt(info,"  query 1 frame done");
+        // prt(info,"  query 1 frame done");
         Mat *ret_mat=new Mat(ret_img,0);
         if(ret_img==NULL){
-            prt(info,"get video source fail, source url:%s",url);
+       //     prt(info,"get video source fail, source url:%s",url);
             err=1;
             //     std::this_thread::sleep_for(chrono::milliseconds(1000));
             //    QThread::sleep(1);

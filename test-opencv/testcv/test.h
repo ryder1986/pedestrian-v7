@@ -23,6 +23,7 @@ public:
         IplImage *ret_img;
       //  p_cap= cvCreateFileCapture("/root/video/test.mp4");  //读取视频
         p_cap= cvCreateFileCapture("http://192.168.1.28:8554/test");  //读取视频
+
         ret_img=NULL;
        //   abc test;
         QTimer *t;
