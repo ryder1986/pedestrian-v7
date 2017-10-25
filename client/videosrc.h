@@ -17,28 +17,19 @@ class  VideoSrc:public QObject{
     Q_OBJECT
 public:
     bool video_connected_flag;
-
-    //    VideoSrc()
-    //    {
-    //        video_connected_flag=true;
-    //        //     p_cap= cvCreateFileCapture("rtsp://192.168.1.81:554");  //读取视频
-    //        p_cap= cvCreateFileCapture("/root/repo-github/pedestrian/test.mp4");  //读取视频
-    //    }
     VideoSrc(QString path)
     {
         running=false;
         wait_duration=300;//waiting 200ms  before restart video src
         tick=0;
-        //     p_cap= cvCreateFileCapture("rtsp://192.168.1.81:554");  //读取视频
-        //    prt(info,"start video src %s",url);
         video_connected_flag=true;
         memset(url,0,PATH_LEN);
         strcpy(url,path.toStdString().data());
         p_cap= cvCreateFileCapture(url);  //读取视频
-
-        //   prt(info,"video src starting  %s",url)
-        if(p_cap==NULL)
-        {   prt(info,"video src start  %s err  ",url);     video_connected_flag=false;}
+        if(p_cap==NULL){
+            prt(info,"video src start  %s err  ",url);
+            video_connected_flag=false;
+        }
         else
         { prt(info,"video src  start %s ok  ",url)}
         //        if(p_cap==NULL)
@@ -61,7 +52,7 @@ public:
         disconnect(timer,SIGNAL(timeout()),this,SLOT(time_up()));
         delete timer;
         //     QThread::sleep(1);
-     //   prt(info," delete src");
+        //   prt(info," delete src");
 
 
 
@@ -72,78 +63,6 @@ public:
         //   delete tmr;
         //   delete p_cap;
     }
-    //    void set(VideoHandler &handler)
-    //    {
-    //        handler.frame_ori= cvQueryFrame(p_cap);
-    //    }
-
-    //    VideoHandler &operator>>(VideoHandler &handler)
-    //    {
-
-    //        int err=0;
-    //        handler.frame_ori= cvQueryFrame(p_cap);
-    //        if(handler.frame_ori==NULL){
-    //            prt(info,"get video source fail, source url:%s",url);
-    //            err=1;
-    //            std::this_thread::sleep_for(chrono::milliseconds(1000));
-    //        }else{
-    //            //    prt(info,"get video source url:%s",url);
-    //        }
-    //        if(!err)
-    //            handler.work(url);
-    //        return handler;
-    //    }
-    //    VideoHandler &work(VideoHandler &handler)
-    //    {
-
-    //        int err=0;
-    //        handler.frame_ori= cvQueryFrame(p_cap);
-
-    //        if(handler.frame_ori==NULL){
-    //            prt(info,"get video source fail, source url:%s",url);
-    //            err=1;
-    //            std::this_thread::sleep_for(chrono::milliseconds(1000));
-    //        }else{
-    //          prt(info,"get video source url:  size %d",handler.frame_ori->origin);
-    //        }
-    //        if(!err){
-
-    //            handler.work(url);
-    //        }
-    //        return handler;
-    //    }
-
-    //    IplImage *fetch_frame()
-    //    {
-    //        IplImage *ret_img;
-    //        int err=0;
-    //        ret_img=cvQueryFrame(p_cap);
-    //        if(ret_img==NULL){
-    //            //    prt(info,"get video source fail, source url:%s",url);
-    //            err=1;
-    //            //     std::this_thread::sleep_for(chrono::milliseconds(1000));
-    //            //    QThread::sleep(1);
-    //            if(video_connected_flag==true)
-    //            {
-
-    //                emit video_disconnected();
-    //                video_connected_flag=false;
-    //            }
-    //            //     prt(info,"sleep done");
-    //        }else{
-    //            if(video_connected_flag==false)
-    //            {
-
-    //                emit video_connected();
-    //                video_connected_flag=true;
-    //            }
-    //            //    prt(info,"get video source url:  size %d",ret_img->imageSize);
-    //        }
-    //        if(err)
-    //            return NULL;
-    //        else
-    //            return ret_img;
-    //    }
     Mat *get_frame()
     {
 
@@ -169,12 +88,12 @@ public:
         // double pro=cvGetCaptureProperty(p_cap,CV_CAP_PROP_XI_TIMEOUT);
         //  prt(info," set %d ,opecv time out %d",ret ,pro);
         //      CV_CAP_PROP_XI_TIMEOUT
-      //prt(info,"  start query 1 frame ");
+        //prt(info,"  start query 1 frame ");
         ret_img=cvQueryFrame(p_cap);
         // prt(info,"  query 1 frame done");
         Mat *ret_mat=new Mat(ret_img,0);
         if(ret_img==NULL){
-       //     prt(info,"get video source fail, source url:%s",url);
+            //     prt(info,"get video source fail, source url:%s",url);
             err=1;
             //     std::this_thread::sleep_for(chrono::milliseconds(1000));
             //    QThread::sleep(1);
@@ -213,7 +132,7 @@ public slots:
         //prt(info,"@@@@@@@@@@@@@@@@@@@@@ checking per %d seconds",wait_duration/1000);
         if(running == false)
         {
-        //    prt(info,"################## source need restart ");
+            //    prt(info,"################## source need restart ");
             //  emit video_disconnected();
         }
         running= false;

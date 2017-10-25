@@ -156,7 +156,7 @@ protected:
                 QThread::msleep(1000);
                 //      break;
             }
-            QThread::msleep(100);
+            QThread::msleep(10);
         }
     }
 
@@ -369,7 +369,7 @@ public slots:
         connect(c,SIGNAL(output(QByteArray,Camera *)),this,SLOT(camera_output(QByteArray,Camera *)));
         cams.append(c);
         //   c->start();
-        prt(info,"cam %d append",index);
+        prt(info,"open camera %d",index);
     }
     void del_camera_internal(int index)
     {
