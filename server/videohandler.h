@@ -48,6 +48,12 @@ public:
     {
         frame_mat=frame;
     }
+    void set_null_frame( )
+    {
+        Mat frame;
+        frame.resize(0);
+        frame_mat=&frame;
+    }
     bool work(QByteArray &rst_ba)
     {
         int min_win_width = 64;	// 48, 64, 96, 128, 160, 192, 224

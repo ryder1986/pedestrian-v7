@@ -26,6 +26,11 @@ public:
     void set_frame(Mat *frm){
         p_render->render_set_mat(*frm);
     }
+    void set_null_frame(){
+        Mat mt;
+        mt.resize(0);
+        p_render->render_set_mat(mt);
+    }
     bool  work(QByteArray  &ba)
     {
         return true;

@@ -297,7 +297,7 @@ public slots:
             frame.resize(640*480*3);
             frame=Mat(640,480,CV_8UC3);
 
-            memset(frame.data,255,640*480*3);
+            memset(frame.data,100,640*480*3);
             //    char tmp1=*f.data;
             //   char tmp=*frame.data;
 

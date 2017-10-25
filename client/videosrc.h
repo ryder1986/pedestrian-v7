@@ -13,30 +13,6 @@
 #include "common.h"
 using namespace cv;
 using namespace std;
-//#include "videohandler.h"
-//class watch_timer:public QThread{
-//    Q_OBJECT
-//public:
-//    watch_timer()
-//    {
-//        printf("timer_thread start\n");
-//        QTimer::singleShot(10000,this,SLOT(fun()));
-//    }
-//    ~watch_timer()
-//    {
-//        printf("timer_thread quit\n");
-//    }
-
-//public slots:
-//    void  watch()
-//    {
-//        printf("timer_thread\n");
-//        QTimer::singleShot(10000,this,SLOT(fun()));
-//    }
-
-//private:
-
-//};
 class  VideoSrc:public QObject{
     Q_OBJECT
 public:
@@ -170,6 +146,7 @@ public:
     //    }
     Mat *get_frame()
     {
+
         //   cap_lock.lock();
         tick++;
         //prt(info,"fetchingframe %d",tick);

@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
 
-    MainWindow w;
+    MainWindow w;//make sure that no delay in constraction
     //  w.setWindowFlags(Qt::WindowFullScreen);
     //  w.setWindowState(Qt::WindowFullScreen);
     w.setWindowState(Qt::WindowMaximized);
