@@ -155,9 +155,14 @@ public slots:
     }
     QString wait_server_info_reply()
     {
+        int tick=0;
+        QString str;
         while(!udp_skt_find_server->hasPendingDatagrams())
         {
-
+             QThread::msleep(10);
+            if(tick++>100){
+                    return str;
+            }
         }
         //    if(udp_skt->hasPendingDatagrams())
         {
