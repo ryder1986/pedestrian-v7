@@ -1,11 +1,11 @@
 {
     "camera": [
         {
-            "ip": "/root/video/test.264",
+            "ip": "/root/video/test.264-bk",
             "port": 554
         },
         {
-            "ip": "1",
+            "ip": "/root/video/test.264",
             "port": 554
         }
     ],

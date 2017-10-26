@@ -36,61 +36,66 @@ public:
     bool quit_work;
     explicit Camera(camera_data_t dat) : data(dat),p_video_src(NULL)
     {
+        prt(info,"starting camera");
         quit_work=false;
-        tick_last=tick=0;
+
+        tick_last=tick=0;// use tick to calculate eclipsed time
         tick_work=0;
+
         timer=new QTimer();
-        connect(timer,SIGNAL(timeout()),this,SLOT(tick_check_frame_rate()));
-        //    connect(this,SIGNAL(restart_source()),this,SLOT(source_disconnected()),Qt::BlockingQueuedConnection);
-        connect(this,SIGNAL(restart_source()),this,SLOT(restart_video()));
-        this->start(NormalPriority);
+        connect(timer,SIGNAL(timeout()),this,SLOT(tick_check_frame_rate()));//check
+        //frame rate per xx seconds
+
+        connect(this,SIGNAL(restart_source()),this,SLOT(restart_video()));//it take some
+        //seconds to start the camera
+        this->start(NormalPriority);//autostart thread
+        timer->start(1000);
+
+
         //   connect(&video_handler,SIGNAL(send_rst(QByteArray)),this,SLOT(handler_output(QByteArray)));
         //  start_video_src();
-
-        //      connected=false;
-        //     create_video_src();
-        //      emit restart_source();
     }
     ~Camera(){
         if(quit_work==false){
-            prt(info,"waitin for thread quit");
-            quit_work=true;
+            prt(info,"stopping camera");
+            quit_work=true;//give run loop the "quit signal/flag"
             //     QThread::msleep(1000);
         }
         //   this->quit();
         //      this->exit();
         //  this->destroyed();
-        this->wait();//wait run done
+        this->wait();//wait run loop done
         //  if(p_video_src!=NULL)
         //   delete p_video_src;
         //   p_video_src=NULL;
-        prt(info,"wait done");
+
+        prt(info,"camera stopped");
     }
 
     void start_video_src()
     {
-        timer=new QTimer();
-        connect(timer,SIGNAL(timeout()),this,SLOT(tick_check_frame_rate()));
-        timer->start(1000);
+//        timer=new QTimer();
+//        connect(timer,SIGNAL(timeout()),this,SLOT(tick_check_frame_rate()));
+//        timer->start(1000);
         //prt(info,"1");
         work_lock.lock();// lock need because we use videosrc(function "run" use it too)
         p_video_src=new VideoSrc(data.ip);
 
         //        connect(this,SIGNAL(restart_source()),this,SLOT(restart_video()),Qt::BlockingQueuedConnection);
-        connect(this,SIGNAL(restart_source()),this,SLOT(restart_video()));
-        quit_work=false;
-        this->start(NormalPriority);
+      //  connect(this,SIGNAL(restart_source()),this,SLOT(restart_video()));
+       // quit_work=false;
+     //   this->start(NormalPriority);
         //    connect(this,SIGNAL(restart_source()),this,SLOT(restart_video()));
         work_lock.unlock();
     }
     void close_video_src()
     {
-        disconnect(timer,SIGNAL(timeout()),this,SLOT(tick_check_frame_rate()));
-        delete timer;
+//        disconnect(timer,SIGNAL(timeout()),this,SLOT(tick_check_frame_rate()));
+//        delete timer;
 
-        quit_work=true;
+       // quit_work=true;
         work_lock.lock();//
-        disconnect(this,SIGNAL(restart_source()),this,SLOT(restart_video()));
+      //  disconnect(this,SIGNAL(restart_source()),this,SLOT(restart_video()));
         //   this->exit();
         //   this->quit();//tell run to quit, TODO, why i need quit while manully?
         //  this->wait();// wait run  quit
@@ -148,16 +153,19 @@ public:
 protected:
     virtual void run()
     {
+        video_handler.set_null_frame();
+        start_video_src();
         while(quit_work==false)
         {
             //prt(info,"runing");
             if(work()!=true){
                 emit restart_source();
-                QThread::msleep(1000);
+                QThread::msleep(2000);//try work after 200ms
                 //      break;
             }
             QThread::msleep(10);
         }
+      //  quit_work=true;//tell main loop that you can quit
     }
 
 signals:
@@ -182,9 +190,7 @@ public slots:
     //    }
     void restart_video()
     {
-        //    prt(info,"1restarting   %s",data.ip.toStdString().data());
         close_video_src();
-        // prt(info,"2restarting   %s",data.ip.toStdString().data());
         prt(info,"restarting   %s",data.ip.toStdString().data());
       //  QThread::msleep(1000);
         start_video_src();
