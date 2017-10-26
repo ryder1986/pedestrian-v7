@@ -187,7 +187,7 @@ public:
         QFile *f=new QFile(config_filename);
         bool ret = f->open(QIODevice::ReadWrite|QIODevice::Truncate);
         if(!ret){
-            prt(info,"fail to open %s",config_filename.data());
+            prt(info,"fail to open %s",config_filename.toStdString().data());
             delete f;
         }
         //   QByteArray json_data;

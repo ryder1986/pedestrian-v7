@@ -38,9 +38,9 @@ public:
         //  broadcast_to_client();
         //  search();
     }
-    void broadcast_to_client()
-    {
 
+    void broadcast_info()
+    {
         QByteArray b;
         b.append("pedestrian");
         udp_skt_find_server->writeDatagram(b.data(), b.size(),
@@ -90,7 +90,7 @@ public:
 
     void search_device()
     {
-        broadcast_to_client();
+        broadcast_info();
         //  search();
     }
 
@@ -153,14 +153,15 @@ public slots:
             server_ip.append(datagram.split(',')[0]);
         }
     }
-    QString wait_server_info_reply()
+    QString wait_server_info_reply(int timeout_seconds)
     {
         int tick=0;
         QString str;
+        int sleep_time=10;
         while(!udp_skt_find_server->hasPendingDatagrams())
         {
-             QThread::msleep(10);
-            if(tick++>100){
+             QThread::msleep(sleep_time);
+            if(tick++>timeout_seconds*1000/sleep_time){
                     return str;
             }
         }

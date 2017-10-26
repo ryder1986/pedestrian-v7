@@ -171,7 +171,7 @@ class Server : public QObject
     Q_OBJECT
 public:
     explicit Server(QObject *parent=0 ):QObject(parent){
-        cam_manager=new CameraManager("/root/repo-github/pedestrian-v7/server/config.json");
+        cam_manager=new CameraManager((char *)"/root/repo-github/pedestrian-v7/server/config.json");
         reporter=new ServerInfoReporter();
         bool ret=false;
         server=new QTcpServer();
@@ -202,7 +202,7 @@ public slots:
         QTcpSocket *skt = server->nextPendingConnection();
         connect(skt, SIGNAL(disconnected()),skt, SLOT(deleteLater()));
         QString str(skt->peerAddress().toIPv4Address()>>28);
-        prt(info,"client %s:%d",str.data(),skt->peerPort());
+        prt(info,"client %s:%d",str.toStdString().data(),skt->peerPort());
         ClientSession *client=new ClientSession(skt,this->cam_manager);
         connect(client,SIGNAL(socket_error(ClientSession*)),this,SLOT(delete_client(ClientSession*)));
         clients.append(client);

@@ -9,7 +9,7 @@
 class ServerInfoReporter : public QObject{
     Q_OBJECT
 public:
-    ServerInfoReporter(QObject *p=NULL){
+    ServerInfoReporter(){
         timer=new QTimer();
         connect(timer,SIGNAL(timeout()),this,SLOT(check_client()));//TODO:maybe replace with readReady signal
         udp_skt = new QUdpSocket(this);

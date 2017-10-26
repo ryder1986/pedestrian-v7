@@ -115,7 +115,7 @@ inline int log_file(char *fname,char *log)
 }
 
 
-#define BUFSIZE 200
+//#define BUFSIZE 200
 
 inline void add_title(char *label,char *str,int line,char *src_file)
 {
@@ -249,8 +249,8 @@ inline void print_str(char *str) {
 }
 #define prt(label,... ) {\
     char tmp_string[BUFSIZE] ;	\
-    sprintf(tmp_string,__VA_ARGS__);	\
-    add_title(#label,tmp_string,__LINE__,__FILE__);  	\
+    sprintf((char *)tmp_string,__VA_ARGS__);	\
+    add_title((char *)#label,(char *)tmp_string,__LINE__,(char *)__FILE__);  	\
     print_str(tmp_string);   \
     log_file(NULL,tmp_string);\
     }

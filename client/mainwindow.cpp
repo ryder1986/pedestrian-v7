@@ -40,7 +40,7 @@
 void MainWindow::on_pushButton_search_device_clicked()
 {
     client->search_device();
-    ui->lineEdit_search->setText(client->wait_server_info_reply());
+    ui->lineEdit_search->setText(client->wait_server_info_reply(2));
 }
 
 void MainWindow::on_pushButton_connect_server_clicked()

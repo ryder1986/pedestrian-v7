@@ -36,7 +36,7 @@ public:
     bool quit_work;
     explicit Camera(camera_data_t dat) : data(dat),p_video_src(NULL)
     {
-        prt(info,"starting camera");
+        prt(info,"starting camera %s",data.ip.toStdString().data());
         quit_work=false;
 
         tick_last=tick=0;// use tick to calculate eclipsed time
@@ -57,7 +57,7 @@ public:
     }
     ~Camera(){
         if(quit_work==false){
-            prt(info,"stopping camera");
+            prt(info,"stopping camera %s",data.ip.toStdString().data());
             quit_work=true;//give run loop the "quit signal/flag"
             //     QThread::msleep(1000);
         }
@@ -69,33 +69,33 @@ public:
         //   delete p_video_src;
         //   p_video_src=NULL;
 
-        prt(info,"camera stopped");
+        prt(info,"camera %s stopped",data.ip.toStdString().data());
     }
 
     void start_video_src()
     {
-//        timer=new QTimer();
-//        connect(timer,SIGNAL(timeout()),this,SLOT(tick_check_frame_rate()));
-//        timer->start(1000);
+        //        timer=new QTimer();
+        //        connect(timer,SIGNAL(timeout()),this,SLOT(tick_check_frame_rate()));
+        //        timer->start(1000);
         //prt(info,"1");
         work_lock.lock();// lock need because we use videosrc(function "run" use it too)
         p_video_src=new VideoSrc(data.ip);
 
         //        connect(this,SIGNAL(restart_source()),this,SLOT(restart_video()),Qt::BlockingQueuedConnection);
-      //  connect(this,SIGNAL(restart_source()),this,SLOT(restart_video()));
-       // quit_work=false;
-     //   this->start(NormalPriority);
+        //  connect(this,SIGNAL(restart_source()),this,SLOT(restart_video()));
+        // quit_work=false;
+        //   this->start(NormalPriority);
         //    connect(this,SIGNAL(restart_source()),this,SLOT(restart_video()));
         work_lock.unlock();
     }
     void close_video_src()
     {
-//        disconnect(timer,SIGNAL(timeout()),this,SLOT(tick_check_frame_rate()));
-//        delete timer;
+        //        disconnect(timer,SIGNAL(timeout()),this,SLOT(tick_check_frame_rate()));
+        //        delete timer;
 
-       // quit_work=true;
+        // quit_work=true;
         work_lock.lock();//
-      //  disconnect(this,SIGNAL(restart_source()),this,SLOT(restart_video()));
+        //  disconnect(this,SIGNAL(restart_source()),this,SLOT(restart_video()));
         //   this->exit();
         //   this->quit();//tell run to quit, TODO, why i need quit while manully?
         //  this->wait();// wait run  quit
@@ -165,7 +165,7 @@ protected:
             }
             QThread::msleep(10);
         }
-      //  quit_work=true;//tell main loop that you can quit
+        //  quit_work=true;//tell main loop that you can quit
     }
 
 signals:
@@ -192,7 +192,7 @@ public slots:
     {
         close_video_src();
         prt(info,"restarting   %s",data.ip.toStdString().data());
-      //  QThread::msleep(1000);
+        //  QThread::msleep(1000);
         start_video_src();
 
         //   prt(info,"3restarting   %s",data.ip.toStdString().data());
@@ -238,7 +238,7 @@ public slots:
             if(1){
                 if(f==NULL){
                     prt(info,"No frame get from %s",data.ip.toStdString().data());
-                       video_handler.set_null_frame();
+                    video_handler.set_null_frame();
                     //    source_disconnected();
                     ret=false;
                 }else
@@ -310,10 +310,11 @@ public:
 
     void use_camera_config()
     {
+    //    int num=0;
         foreach (Camera *c, cams) {
             delete c;
         }
-        int num;
+
         cams.clear();
         for(int i=0;i<p_cfg->data.camera_amount;i++){
             //            Camera *c=new Camera(p_cfg->data.camera[i]);
@@ -324,7 +325,7 @@ public:
             //   if(i==0)
             //   layout->addWidget(&c->render,i,i);
         }
-        num=cams.size();
+    //    num=cams.size();
     }
     QList <Camera *>  &get_cam()
     {
@@ -441,7 +442,6 @@ public slots:
     QByteArray get_config(int i)
     {
         QByteArray b(p_cfg->get_ba());
-
         return b;
     }
 
